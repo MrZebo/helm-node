@@ -10,6 +10,7 @@ phases:
   build:
     commands:
       - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 461827005311.dkr.ecr.eu-central-1.amazonaws.com/
+      - VERSION=$(bash scripts/versioning_aws)
       - docker build -t ${PROJECT}:latest -f Dockerfile .
       - docker tag ${PROJECT}:latest 461827005311.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:latest
       - docker tag ${PROJECT}:latest 461827005311.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:${VERSION}
