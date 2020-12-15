@@ -15,8 +15,3 @@ phases:
       - docker tag ${PROJECT}:latest 461827005311.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:latest
       - docker tag ${PROJECT}:latest 461827005311.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:${VERSION}
       - docker push 461827005311.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}
-artifacts:
-  type: zip
-  files:
-    - "**/*"
-  base-directory: image
