@@ -6,7 +6,12 @@ env:
 phases:
   install:
     commands:
-      - echo 'install'
+      - echo Installing app dependencies...
+      - curl -o kubectl https://amazon-eks.s3.eu-central-1.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl   
+      - chmod +x ./kubectl
+      - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+      - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+      - source ~/.bashrc
   build:
     commands:
       - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 461827005311.dkr.ecr.eu-central-1.amazonaws.com/
@@ -15,3 +20,6 @@ phases:
       - docker tag ${PROJECT}:latest 461827005311.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:latest
       - docker tag ${PROJECT}:latest 461827005311.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:${VERSION}
       - docker push 461827005311.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}
+  post_build:
+    commands:
+      - kubectl apply -f helm-chart/values.yaml
