@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: pkterraform/node-web-app
+  repository: 461827005311.dkr.ecr.eu-central-1.amazonaws.com/test-node-app
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -18,7 +18,6 @@ service:
   targetPort: 8080
   internalPort: 3000
 
-
 ingress:
   enabled: false
   annotations: {}
@@ -27,11 +26,6 @@ ingress:
   hosts:
     - host: chart-example.local
       paths: []
-
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
