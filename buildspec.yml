@@ -13,7 +13,7 @@ phases:
       - chmod +x ./kubectl ./aws-iam-authenticator
       - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
       - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-      - apt-get update && apt-get -y install jq python3-pip python3-dev
+#      - apt-get update && apt-get -y install jq python3-pip python3-dev
       - export KUBECONFIG=$HOME/.kube/config
 
   build:
@@ -26,8 +26,8 @@ phases:
       - docker push ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}
   post_build:
     commands:
-      - echo 'aws sts get-caller-identity'
-      - aws sts assume-role --role-arn arn:aws:iam::${ACC_ID}:root --role-session-name codebuild-kubectl --duration-seconds 900
+      - aws sts get-caller-identity
+#      - aws sts assume-role --role-arn arn:aws:iam::${ACC_ID}:root --role-session-name codebuild-kubectl --duration-seconds 900
       - aws eks update-kubeconfig --name ${PROJECT}
       - chown $(id -u):$(id -g) $HOME/.kube/config
       - kubectl apply -f app.yaml
