@@ -13,7 +13,7 @@ phases:
       - echo 'build'
       - VERSION=$(bash scripts/versioning_aws)
       - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com
-      - docker build --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${PROJECT}:latest -f Dockerfile.k8ts .
+      - docker build -t ${PROJECT}:latest -f Dockerfile .
       - docker tag ${PROJECT}:latest ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:latest
       - docker tag ${PROJECT}:latest ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:${VERSION}
       - docker push ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}
