@@ -29,4 +29,4 @@ phases:
 #      - echo 'aws sts get-caller-identity'
 #      - aws sts assume-role --role-arn arn:aws:iam::${ACC_ID}:root --role-session-name codebuild-kubectl --duration-seconds 900
       - aws eks update-kubeconfig --name ${PROJECT}
-      - kubectl apply -f k8s.yaml
+      - kubectl apply -f app.yaml
