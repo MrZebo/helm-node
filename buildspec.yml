@@ -1,7 +1,7 @@
 version: 0.2
 env:
   variables:
-    PROJECT: "centercredit-nodered-telegram"   #PROJECT NAME MUST ALLWAYS BE DEFINED (it also used as sonar project name)
+    PROJECT: "test-node-app"   #PROJECT NAME MUST ALLWAYS BE DEFINED (it also used as sonar project name)
     STAGE: "dev"
 phases:
   install:
@@ -12,12 +12,11 @@ phases:
       #insert here your build commands
       - echo 'build'
       - VERSION=$(bash scripts/versioning_aws)
-      - echo ${DOCKERHUB_PASSWORD} | docker login --username ${DOCKERHUB_USERNAME} --password-stdin
-      - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 006900613479.dkr.ecr.eu-central-1.amazonaws.com
+      - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com
       - docker build --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${PROJECT}:latest -f Dockerfile.k8ts .
-      - docker tag ${PROJECT}:latest 006900613479.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:latest
-      - docker tag ${PROJECT}:latest 006900613479.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:${VERSION}
-      - docker push 006900613479.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}
+      - docker tag ${PROJECT}:latest ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:latest
+      - docker tag ${PROJECT}:latest ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:${VERSION}
+      - docker push ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}
       - mkdir image
       - ls image
   post_build:
