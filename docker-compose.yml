@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  microservices:
+    # ecr or local prebuilded image
+    image: 'local-repo:{{version}}'
+    container_name: 'project-nodered-messanger'
+    restart: unless-stopped
+    environment:
+      #if environment variables in pm2.config.js
+      - ENVIRONMENT=dev
+    ports:
+     - 8080:8080

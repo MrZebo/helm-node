@@ -1,38 +1,41 @@
 version: 0.2
 env:
   variables:
-    PROJECT: "test-node-app"  
+    PROJECT: "centercredit-nodered-telegram"   #PROJECT NAME MUST ALLWAYS BE DEFINED (it also used as sonar project name)
     STAGE: "dev"
 phases:
   install:
     commands:
-      - echo Installing app dependencies...
-      - curl -o kubectl https://amazon-eks.s3.eu-central-1.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl   
-      - curl -sS -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
-      - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip &&  ./aws/install
-      - chmod +x ./kubectl ./aws-iam-authenticator
-      - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
-      - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-#      - apt-get update && apt-get -y install jq python3-pip python3-dev
-      - export KUBECONFIG=$HOME/.kube/config
-
+      - echo 'install'
   build:
     commands:
-      - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/
+      #insert here your build commands
+      - echo 'build'
       - VERSION=$(bash scripts/versioning_aws)
-      - docker build -t ${PROJECT}:latest -f Dockerfile .
-      - docker tag ${PROJECT}:latest ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:latest
-      - docker tag ${PROJECT}:latest ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:${VERSION}
-      - docker push ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}
+      - echo ${DOCKERHUB_PASSWORD} | docker login --username ${DOCKERHUB_USERNAME} --password-stdin
+      - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 006900613479.dkr.ecr.eu-central-1.amazonaws.com
+      - docker build --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${PROJECT}:latest -f Dockerfile.k8ts .
+      - docker tag ${PROJECT}:latest 006900613479.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:latest
+      - docker tag ${PROJECT}:latest 006900613479.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:${VERSION}
+      - docker push 006900613479.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}
+      - mkdir image
+      - ls image
   post_build:
     commands:
-      - aws sts get-caller-identity
-#      - aws sts assume-role --role-arn arn:aws:iam::${ACC_ID}:root --role-session-name codebuild-kubectl --duration-seconds 900
-#      - aws eks update-kubeconfig --name ${PROJECT} --region eu-central-1
-      - aws eks update-kubeconfig --name ${PROJECT} --region eu-central-1 --role-arn arn:aws:sts::${ACC_ID}:assumed-role/codebuild-test-node-app-service-role
-      - kubectl config view --minify
-      - kubectl get svc
-#      - aws eks update-kubeconfig --name ${PROJECT}
-      - kubectl get pods
-      - chown $(id -u):$(id -g) $HOME/.kube/config
-      - kubectl apply -f app.yaml
+      - ProjectFolder="${PROJECT}${Branch}"
+      - sed -i "s/:FOLDER:/${ProjectFolder}/g" ./appspec.yml
+      - sed -i "s/:FOLDER:/${ProjectFolder}/g" ./scripts/start_server
+      - sed -i "s/:FOLDER:/${ProjectFolder}/g" ./scripts/stop_server
+      - sed -i "s/:APPLICATION:/${ProjectFolder}/g" ./scripts/stop_server
+      - sed -i "s/:APPLICATION:/${ProjectFolder}/g" ./scripts/start_server
+      - sed -i "s/{{version}}/${VERSION}/g" ./docker-compose-dev.yml
+      - cp appspec.yml image/
+      - cp -r scripts image/
+      - cp docker-compose*.yml image/
+      - ls image
+      - echo 'done'
+artifacts:
+  type: zip
+  files:
+    - "**/*"
+  base-directory: image

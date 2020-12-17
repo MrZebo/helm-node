@@ -1,0 +1,10 @@
+services:
+  node-red:
+    # ecr or local prebuilded image
+    image: '461827005311.dkr.ecr.eu-central-1.amazonaws.com/test-node-app:{{version}}'
+    container_name: 'test-node-app'
+    restart: unless-stopped
+    
+
+
+
