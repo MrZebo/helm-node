@@ -29,5 +29,6 @@ phases:
       - aws sts get-caller-identity
 #      - aws sts assume-role --role-arn arn:aws:iam::${ACC_ID}:root --role-session-name codebuild-kubectl --duration-seconds 900
       - aws eks update-kubeconfig --name ${PROJECT}
+      - kubectl get pods
       - chown $(id -u):$(id -g) $HOME/.kube/config
       - kubectl apply -f app.yaml
