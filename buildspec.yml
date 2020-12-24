@@ -6,7 +6,16 @@ env:
 phases:
   install:
     commands:
-      - echo 'install'
+      - apt install -y awscli git python3
+      - curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator
+      - chmod +x ./aws-iam-authenticator
+      - mkdir -p ~/bin && cp ./aws-iam-authenticator ~/bin/aws-iam-authenticator && export PATH=~/bin:$PATH
+      - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+      - chmod +x kubectl
+      - mv ./kubectl /usr/local/bin/kubectl
+      - wget https://storage.googleapis.com/kubernetes-helm/helm-v2.14.0-linux-amd64.tar.gz -O helm.tar.gz; tar -xzf helm.tar.gz
+      - chmod +x ./linux-amd64/helm
+      - mv ./linux-amd64/helm /usr/local/bin/helm
   build:
     commands:
       #insert here your build commands
@@ -17,24 +26,8 @@ phases:
       - docker tag ${PROJECT}:latest ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:latest
       - docker tag ${PROJECT}:latest ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:${VERSION}
       - docker push ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}
-      - mkdir image
-      - ls image
   post_build:
     commands:
-      - ProjectFolder="${PROJECT}${Branch}"
-      - sed -i "s/:FOLDER:/${ProjectFolder}/g" ./appspec.yml
-      - sed -i "s/:FOLDER:/${ProjectFolder}/g" ./scripts/start_server
-      - sed -i "s/:FOLDER:/${ProjectFolder}/g" ./scripts/stop_server
-      - sed -i "s/:APPLICATION:/${ProjectFolder}/g" ./scripts/stop_server
-      - sed -i "s/:APPLICATION:/${ProjectFolder}/g" ./scripts/start_server
-      - sed -i "s/{{version}}/${VERSION}/g" ./docker-compose-dev.yml
-      - cp appspec.yml image/
-      - cp -r scripts image/
-      - cp docker-compose*.yml image/
-      - ls image
-      - echo 'done'
-artifacts:
-  type: zip
-  files:
-    - "**/*"
-  base-directory: image
+      - "helm upgrade -f app.yaml"
+
+
