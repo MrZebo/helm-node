@@ -4,12 +4,12 @@ WORKDIR /application
 RUN chown node:node /application
 USER node
 ENV NODE_ENV=production \
-    APPLICATION_NAME=express-test
+    APPLICATION_NAME=helmnode2
 COPY --chown=node:node . .
 RUN npm install --unsafe-perm
-ARG PORT=8443
+ARG PORT=8080
 ENV PORT=${PORT}
 
 EXPOSE ${PORT}/tcp
 
-CMD node app2.js
+CMD node app.js
