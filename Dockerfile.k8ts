@@ -8,6 +8,7 @@ ENV NODE_ENV=production \
 COPY --chown=node:node . .
 RUN npm install --unsafe-perm
 ARG PORT=8443
+
 ENV PORT=${PORT}
 
 EXPOSE ${PORT}/tcp
