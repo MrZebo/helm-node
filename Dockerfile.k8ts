@@ -1,0 +1,14 @@
+FROM node:14-alpine
+
+WORKDIR /application
+RUN chown node:node /application
+USER node
+ENV NODE_ENV=production \
+    APPLICATION_NAME=express-test
+COPY --chown=node:node . .
+RUN npm install --unsafe-perm
+ARG PORT=8443
+ENV PORT=${PORT}
+EXPOSE ${PORT}/tcp
+
+CMD node app2.js
