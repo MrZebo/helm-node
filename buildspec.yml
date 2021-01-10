@@ -16,6 +16,8 @@ phases:
       - chmod +x ./aws-iam-authenticator
       - mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
       - aws-iam-authenticator help
+      - apt-get update && apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
+      - aws --version
       # Configure kubectl
       - aws eks --region eu-central-1 update-kubeconfig --name test-node-app
   build:
