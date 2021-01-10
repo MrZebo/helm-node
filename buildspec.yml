@@ -28,6 +28,7 @@ phases:
       - VERSION=$(bash scripts/versioning_aws)
       - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com
       - export KUBECONFIG=$HOME/.kube/config
+      
       - docker build -t ${PROJECT}:latest -f Dockerfile .
       - docker tag ${PROJECT}:latest ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:latest
       - docker tag ${PROJECT}:latest ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}:${VERSION}
