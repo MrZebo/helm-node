@@ -36,3 +36,5 @@ phases:
   post_build:
     commands:
       - kubectl apply -f app.yaml
+      - kubectl apply -f k8s.yaml
+
