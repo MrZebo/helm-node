@@ -35,6 +35,6 @@ phases:
       - docker push ${ACC_ID}.dkr.ecr.eu-central-1.amazonaws.com/${PROJECT}
   post_build:
     commands:
-      - kubectl apply -f app.yaml
+#      - kubectl apply -f app.yaml
       - kubectl apply -f k8s.yaml
 
