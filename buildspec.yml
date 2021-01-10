@@ -18,7 +18,7 @@ phases:
       - aws-iam-authenticator help
       # Configure kubectl
       - aws eks --region eu-central-1 update-kubeconfig --name test-node-app
-    build:
+  build:
     commands:
       #insert here your build commands
       - echo 'build'
