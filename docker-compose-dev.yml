@@ -7,6 +7,16 @@ services:
     restart: unless-stopped
     ports:
       - 8080:8080
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'      
 networks:
   default:
     external:
