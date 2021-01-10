@@ -5,8 +5,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 3000
-      targetPort: 3000
+    - port: 80
+      targetPort: 8080
   selector:
     app: test-node-app
 ---
@@ -32,9 +32,10 @@ spec:
       containers:
         - name: test-node-app
           image: 461827005311.dkr.ecr.eu-central-1.amazonaws.com/test-node-app:latest
+          imagePullPolicy: Always          
           securityContext:
             privileged: false
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
           ports:
-            - containerPort: 3000
+            - containerPort: 8080
