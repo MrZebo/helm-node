@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: test-node-app
-          image: 461827005311.dkr.ecr.eu-central-1.amazonaws.com/test-node-app:latest
+          image: 461827005311.dkr.ecr.eu-central-1.amazonaws.com/test-node-app:{{version}}
           imagePullPolicy: Always          
           securityContext:
             privileged: false
